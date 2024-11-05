@@ -97,7 +97,8 @@ export class AppComponent {
   outputArea?: ElementRef;
 
   constructor(private httpClient: HttpClient, private jagger: JaggerService, private location: Location, private readonly locationStrategy: LocationStrategy) {
-      this.baseHref = `${document.location.origin}/${this.locationStrategy.getBaseHref()}`;
+    let basicHref = this.locationStrategy.getBaseHref();
+    this.baseHref = `${document.location.origin}/${basicHref=="/"? "":basicHref}`;
   }
   ngOnInit() {
     this.jagger.wasmLoaded.then((_) => {
