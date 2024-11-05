@@ -1,4 +1,5 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import {Location, LocationStrategy} from '@angular/common';
+import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
@@ -62,6 +63,7 @@ export class AppComponent {
   title = 'jagger-wasm-demo';
   text = "";
   LoadingStatus = LoadingStatus;
+  baseHref: string;
   modelLoadingSteps: Array<LoadModelStep> = [{
     id: LoadStep.download,
     annot: "Downloading Model",
@@ -94,7 +96,8 @@ export class AppComponent {
   @ViewChild("outputArea")
   outputArea?: ElementRef;
 
-  constructor(private httpClient: HttpClient, private jagger: JaggerService) {
+  constructor(private httpClient: HttpClient, private jagger: JaggerService, private location: Location, private readonly locationStrategy: LocationStrategy) {
+      this.baseHref = `${document.location.origin}/${this.locationStrategy.getBaseHref()}`;
   }
   ngOnInit() {
     this.jagger.wasmLoaded.then((_) => {
@@ -142,7 +145,7 @@ export class AppComponent {
     const promise = new Promise<Blob>((tmp) => {
       resolve = tmp;
     })
-    this.httpClient.get('/kwdlc.zip', { reportProgress: true, observe: 'events', responseType: 'blob' })
+    this.httpClient.get(`${this.baseHref}kwdlc.zip`, { reportProgress: true, observe: 'events', responseType: 'blob' })
       .subscribe(event => {
         switch (event.type) {
           case HttpEventType.DownloadProgress:
