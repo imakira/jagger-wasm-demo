@@ -1,0 +1,3 @@
+* License
+
+Code compiled based on [[https://www.tkl.iis.u-tokyo.ac.jp/~ynaga/jagger/index.en.html][jagger]] (./jagger/) is under BSD-2-Clause license. Other code is released into public domain (Unlicensed).

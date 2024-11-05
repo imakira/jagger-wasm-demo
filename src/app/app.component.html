@@ -1,0 +1,97 @@
+<div class="main">
+  <div class="header">
+    <h2 class="title">Japanese Morphological Analyzer</h2>
+    <h4 class="secondary-title">Base on a port of <a
+        href="https://www.tkl.iis.u-tokyo.ac.jp/~ynaga/jagger/index.en.html">Jagger</a> running on
+      WASM</h4>
+  </div>
+  <div class="body">
+    <div class="load-model" [@element-show]="isModelLoaded() ? 'hidden': 'shown'">
+      <mat-card >
+        <mat-card-content class="load-model-main">
+          <mat-list>
+            <ng-container *ngFor="let step of modelLoadingSteps" >
+              <mat-list-item class="loading-item" [@text-show]="step.status===LoadingStatus.PENDING ? 'hidden' : 'shown'">
+                <div class="item">
+                    <span class="loading-item-progress">
+                        {{ step.status != LoadingStatus.DONE ?  
+                        step.progress : "" }}
+                      <mat-icon [@text-show]="step.status===LoadingStatus.DONE ? 'shown' : 'hidden'">check</mat-icon>
+                    </span>
+                    <span class="loading-item-text">
+                        {{step.annot + (step.status == LoadingStatus.PROCESSING && "..." || ".")}}
+                    </span>
+                </div>
+              </mat-list-item>
+            </ng-container>
+          </mat-list>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="input-area">
+      <form (ngSubmit)="onSubmit()" class="input-form" #inputForm="ngForm">
+        <mat-form-field appearance="outline" class="input-field">
+          <mat-label>Put the text here...</mat-label>
+          <textarea [disabled]="!isModelLoaded()" id="text-input" matInput [ngModelOptions]="{standalone: true}" [(ngModel)]="text"></textarea>
+        </mat-form-field>
+        <div>
+          <button [disabled]="!isModelLoaded()" type="submit" class="confirm-btn" mat-fab aria-label="Example icon button with a heart icon">
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </form>
+    </div>
+    <div *ngIf="tokenizeResult" class="output-area" #outputArea>
+        <mat-card class="sentence-container" *ngFor="let sentence of tokenizeResult.sentences; index as sentenceIndex">
+          <div class="sentence">
+            <div class="sentence-tokens">
+              <button mat-button class="sentence-token" *ngFor="let token of sentence.tokens; index as tokenIndex" (mouseenter)="rowOnMouseEnter(sentenceIndex, tokenIndex)" (click)="tokenOnClick(sentenceIndex, tokenIndex)">
+                  {{token.surface}}
+              </button>
+            </div>
+          </div>
+          <div class="tokens">
+            <table mat-table [dataSource]="sentence.tokens">
+              <ng-container matColumnDef="surface">
+                <th mat-header-cell *matHeaderCellDef> surface </th>
+                <td mat-cell *matCellDef="let ele">{{ele.surface}}</td>
+              </ng-container>
+              <ng-container matColumnDef="pos">
+                <th mat-header-cell *matHeaderCellDef> pos </th>
+                <td mat-cell *matCellDef="let ele">{{ele.pos}}</td>
+              </ng-container>
+              <ng-container matColumnDef="posDetail1">
+                <th mat-header-cell *matHeaderCellDef> pos detail 1 </th>
+                <td mat-cell *matCellDef="let ele">{{ele.posDetail1}}</td>
+              </ng-container>
+              <ng-container matColumnDef="posDetail2">
+                <th mat-header-cell *matHeaderCellDef> pos detail 2 </th>
+                <td mat-cell *matCellDef="let ele">{{ele.posDetail2}}</td>
+              </ng-container>
+              <ng-container matColumnDef="conjugationType">
+                <th mat-header-cell *matHeaderCellDef> conjugationType </th>
+                <td mat-cell *matCellDef="let ele">{{ele.conjugationType}}</td>
+              </ng-container>
+              <ng-container matColumnDef="basicForm">
+                <th mat-header-cell *matHeaderCellDef> basicForm </th>
+                <td mat-cell *matCellDef="let ele">{{ele.basicForm}}</td>
+              </ng-container>
+              <ng-container matColumnDef="pronunciation">
+                <th mat-header-cell *matHeaderCellDef> pronunciation </th>
+                <td mat-cell *matCellDef="let ele">{{ele.pronunciation}}</td>
+              </ng-container>
+              <ng-container matColumnDef="note">
+                <th mat-header-cell *matHeaderCellDef> note </th>
+                <td mat-cell *matCellDef="let ele">{{ele.note}}</td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+              <tr mat-row class="token-row" *matRowDef="let myRowData; columns: displayColumns; index as rowIndex;" (mouseenter)="rowOnMouseEnter(sentenceIndex,rowIndex)"
+                (mouseleave)="rowOnMouseLeave(sentenceIndex, rowIndex)"
+                [ngClass]="{'row-active': activeRow && activeRow.rowIndex==rowIndex && activeRow.sentenceIndex==sentenceIndex}"></tr> </table>
+          </div>
+        </mat-card>
+    </div>
+  </div>
+</div>
+
+<router-outlet />

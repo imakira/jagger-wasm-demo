@@ -1,0 +1,113 @@
+@use "@angular/material" as mat;
+@use "../theme.scss" as theme;
+
+
+.main {
+  min-height: 100%;
+  min-width: 100%;
+  background-color: mat.get-theme-color(theme.$theme, "surface");
+  position: relative;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  .header {
+    background-color: mat.get-theme-color(theme.$theme, "surface-container");
+    padding: 4rem 2rem;
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+
+    .title {
+      color: mat.get-theme-color(theme.$theme, "primary");
+    }
+    .secondary-title {
+      font-weight: normal;
+      color: mat.get-theme-color(theme.$theme, "secondary");
+    }
+  }
+  .body {
+    padding: 2rem 1rem 0 1rem;
+    @media (min-width: 1100px) {
+      width: 1000px;
+    }
+    @media (max-width: 1100px){
+      width: 100%;
+    }
+    .load-model {
+      overflow: hidden;
+      .load-model-main {
+        .loading-item {
+          .item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            .loading-item-progress {
+              display: flex;
+              justify-content: right;
+              min-width: 5rem;
+            }
+            .loading-item-text {
+              display: inline-block;
+              font-size: 1.3rem;
+            }
+          }
+        }
+      }
+    }
+
+    .input-area {
+      .input-form {
+        margin-top: 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        .input-field {
+          flex-grow: 1;
+          height: 5rem;
+        }
+        .confirm-btn {
+          width: 4.8rem;
+          height: 4.8rem;
+          // to compensate the shadow, make it look more balanced
+          position: relative;
+          top: -2px;
+          ::ng-deep .mat-icon {
+            height: 48px !important;
+            width: 48px !important;
+            font-size: 48px !important;
+          }
+        }
+      }
+    }
+  }
+  .output-area {
+    .sentence-container {
+      margin-top: 2.5rem;
+      background-color: mat.get-theme-color(theme.$theme, "primary-fixed");
+      .sentence {
+        padding: 0.7rem 0;
+        position: sticky;
+        top: -0.7rem;
+        .sentence-tokens {
+          width: 100%;
+          background-color: mat.get-theme-color(theme.$theme, "primary-fixed");
+          .sentence-token {
+            font-size: 1.2rem;
+          }
+        }
+      }
+      .tokens {
+        overflow-y: auto;
+        .row-active {
+          background-color: mat.get-theme-color(theme.$theme, "primary-fixed");
+        }
+      }
+    }
+  }
+}
+
+#text-input {
+  resize: none;
+}
