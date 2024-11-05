@@ -33,20 +33,20 @@ export function splitText(rawText: string): SplitTextResult{
   while(true){
     puncPos=text.search(regex);
     if(puncPos == -1){
-      puncPos = text.length-1;
+      puncPos = text.length;
     }
     let sentenceStart = 0;
-    while(sentenceStart<=puncPos && text[sentenceStart].match(/[ \u3000]/)){
+    while(sentenceStart<puncPos && text[sentenceStart].match(/[ \u3000]/)){
       sentenceStart++;
     }
     if(puncPos>sentenceStart){
       result.push({text: text.substring(sentenceStart, puncPos), sentencePosition: start});
     }
-    if(puncPos==(text.length - 1)){
+    if(puncPos==text.length){
       break;
     }
     text = text.substring(puncPos+1);
-    start+=(puncPos+1)
+    start+=(puncPos)
   }
   return {rawText: rawText ,sentences: result};
 }
